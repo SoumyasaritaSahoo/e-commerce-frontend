@@ -4,20 +4,16 @@
  * (docs/08-security-plan.md, docs/09-tech-stack.md).
  */
 
+import { getAccessToken, getRefreshToken, setAccessToken, setRefreshToken } from "./auth-storage";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
 
 interface RequestOptions extends RequestInit {
   skipAuth?: boolean;
 }
 
-function getAccessToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return window.localStorage.getItem("accessToken");
-}
-
 async function refreshAccessToken(): Promise<string | null> {
-  const refreshToken =
-    typeof window !== "undefined" ? window.localStorage.getItem("refreshToken") : null;
+  const refreshToken = getRefreshToken();
   if (!refreshToken) return null;
 
   const response = await fetch(`${API_BASE_URL}/auth/token/refresh/`, {
@@ -28,7 +24,8 @@ async function refreshAccessToken(): Promise<string | null> {
   if (!response.ok) return null;
 
   const data = await response.json();
-  window.localStorage.setItem("accessToken", data.access);
+  setAccessToken(data.access);
+  if (data.refresh) setRefreshToken(data.refresh);
   return data.access as string;
 }
 

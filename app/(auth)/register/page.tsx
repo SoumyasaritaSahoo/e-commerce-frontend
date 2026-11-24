@@ -1,8 +1,19 @@
+import type { Metadata } from "next";
+
+import { RegisterForm } from "@/features/auth/register-form";
+
+export const metadata: Metadata = {
+  title: "Create account | Marketplace",
+};
+
 export default function RegisterPage() {
   return (
-    <main className="flex flex-1 flex-col gap-2 p-16">
-      <h1 className="text-2xl font-semibold">Create account</h1>
-      <p className="text-zinc-500">features/auth — POST /api/v1/auth/register/</p>
-    </main>
+    <>
+      <div className="mb-6 text-center">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Create Account</h1>
+        <p className="mt-1 text-sm text-zinc-500">Join us and start shopping smarter</p>
+      </div>
+      <RegisterForm />
+    </>
   );
 }
